@@ -56,7 +56,6 @@ int main(int argc, char **argv){
 		printf("Cannot Output to %s", outputFilename);
 		return 1;
 	}
-	//do stuff
 	//operation structure
 	struct operation {
 		//The parts we will manually add for each operation
@@ -74,67 +73,39 @@ int main(int argc, char **argv){
 		int Hex;
 	} ops[MAXOPS]; //list of operations in order
 
-	int counter = 0; //keep track of line #'s
+	char codes[100][15][20] = NULL; //100 lines, 15 words per line, 20 chars per line
+
+	int wordCount = 0;
+	int lineCount = 0; //keep track of line #'s
 	char line[100]; //temp store lines
 	char *fun; //store functional token
 	char *token; //store each word
 
 	char funExp[] = "\n\t\r";
 	char wordExp[] = " ,";
-	char *eachWord[10];
-	char **eachLine[MAXOPS];
 	//while there are still lines
 	while(fgets(line,sizeof line,fp)!= NULL){
 		//get rid of garbage
 		fun = strtok(line, funExp);
 		while(fun != NULL){
-			//printf("F%d: |%s|\n",counter, fun);
 			//break lines into words
-			int wordCount = 0;
+			wordCount = 0;
 			token = strtok(fun, wordExp);
 			while(token != NULL){
-				//printf("||%s|| ", token);
 				//save each word in the line
-				char *word = token;
-				eachWord[wordCount] = word;
+				//char *word = token;
+
 				wordCount++;
 				token = strtok(NULL, wordExp);
 			}
-			//printf("\n");
-
-			//go back through the each word in the line
-			printf("%2d: ", counter);
-			int i;
-			for(i=0; i<wordCount; i++){
-				printf("%s ", eachWord[i]);
-			}
-			printf("\n");
 			fun = strtok(NULL,funExp);
 		}
-		eachLine[counter] = eachWord;
-		//printf("L%d: %s\n", counter, line);
-		counter ++;
+		lineCount++;
 	}
-	printf("\n");
-	int i;
-	int j=0;
-	char *temp;
-	for(i=0; i<counter; i++){
-		temp = eachLine[i][j][k];
-		while(temp != NULL){
-			printf("%s ", temp);
-			j++;
-			temp = eachLine[i][j];
-		}
-		printf("\n");
-	}
-	printf("\n");
-
-
 
 	//next up:
 	/*
-		$Import each line
+		Import each line
 		Check for labels
 			Enumerate labels
 		Check for operation
