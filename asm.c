@@ -8,8 +8,16 @@ int isLabel(char *s);
 int isComment(char *s);
 
 int addToRegisterList(char *s);
-int addToOpcodeList(char *s)
+int addToOpcodeList(char *s);
 int fufillLabel(char *s, int opCount);
+
+#define MAXOPS 21
+char opcodes[MAXOPS][5] = {
+	"LDI", "MOV", "EOR", "AND", "OR",
+	"ADD", "SUB", "LSR", "LSL", "MUL",
+	"JMP", "BRCC", "BRCS", "BRNE", "BRNQ",
+	"BRPL", "BRMI", "NOP", "CP", "CLR", "CPI"
+};
 
 int main(int argc, char **argv){
 	//check arguments
@@ -40,23 +48,23 @@ int main(int argc, char **argv){
 	}
 	//define datatypes
 	struct {
-		char *name;
+		char name[20];
 		int line;
 	} labels[100];
 	int nLabel = 0;
 
 	struct {
-		char *name;
+		char name[20];
 		int location;
 	} registers[100];
 	int nReg = 0;
 
 
 	struct {
-		char *name;
-		char *label;
-		char *Dest;
-		char *Src;
+		char name[20];
+		char label[20];
+		char Dest[20];
+		char Src[20];
 
 		int ui; //use input
 		int we; //write enable
@@ -78,7 +86,7 @@ int main(int argc, char **argv){
 	char funExp[] = "\n\t\r ,"; //delimiters
 	char *token; //token for words
 	char line[100]; //temp storage for each line
-	string operation[3]; //temp operation storage
+	char operation[3][20]; //temp operation storage
 	int cCount = 2;
 	while(fgets(line, sizeof line, fp)!=NULL){
 		token = strtok(line, funExp);
@@ -107,17 +115,23 @@ int main(int argc, char **argv){
 					strcpy(operations[nOps].Src, operation[0]);
 					operations[nOps].ui = 0;
 				}
-				else {
+				else if(!(strcmp(operation[2], "CLR") ==0)) {
 					printf("%s uses Input\n", operation[2]);
 					operations[nOps].ui = 1;
+				}
+				else {
+					printf("%s only modifies %s\n", operation[2], operation[1]);
+					//****do something about ui****
 				}
 			}
 			else {
 				printf("%s is a branch to %s\n", operation[2], operation[1]);
 				strcpy(operations[nOps].label, operation[1]);
 				operations[nOps].we = 0;
+			}
 
 		}
+		printf("\n");
 
 	} //end of input
 
@@ -132,10 +146,15 @@ int isReg(char *s){
 }
 int isOpcode(char *s){
 	//look through opcode dictionary for a match
+	int i;
+	for(i=0; i<MAXOPS; i++){
+		if(strcmp(s, opcodes[i]) == 0) return 1;
+	}
+	return 0;
 }
 int isLabel(char *s){
 	//The last character of a label is ':'
-	if(s[strlen(s)-1] == ":") return 1;
+	if(s[strlen(s)-1] == ':') return 1;
 	else return 0;
 }
 int addToRegisterList(char *s){
