@@ -159,21 +159,30 @@ int main(int argc, char **argv){
 		j=0;
 		char *sam = code[i][j];
 		while(j<3 && sam[0] != NULL){
+			//eliminate comments
 			if(sam[0] == ';') break;
 			printf("|%s| ", sam);
+			//enumerates labels
 			if(sam[strlen(sam)-1] == ':'){
-				printf(" Label! ");
+				///printf(" Label! ");
 				int h = i;
 				while(h<counter){
 					if(isOp(code[h][0])){
 						strcpy(labels[numLabels].name, sam);
 						labels[numLabels].lineNumber = h;
-						printf("label %d is %s", labels[numLabels].lineNumber, labels[numLabels].name);
+						//printf("label %d is %s", labels[numLabels].lineNumber, labels[numLabels].name);
+						numLabels++;
 						break;
 					}
 					h++;
 				}
 			}
+			//add operations op struct
+			if(isOp(code[i][0])){
+				
+			}
+
+
 			j++;
 			sam = code[i][j];
 		}
@@ -181,7 +190,7 @@ int main(int argc, char **argv){
 	}
 	//next up:
 	/*
-		Enumerate labels
+		
 		Check for operation
 		Methods for each opcode
 		Output hex to printf & file
