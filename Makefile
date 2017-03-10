@@ -1,6 +1,6 @@
-default: AsSambler.c
-	gcc -g -o AsSAMbler AsSAMbler.c
+default: asm.c
+	gcc -g -o asm asm.c
 build:
-	gcc -g -o AsSAMbler AsSAMbler.c
+	gcc -g -o asm asm.c
 test:
-	gcc -g -o AsSAMbler AsSAMbler.c && ./AsSAMbler main.S
+	gcc -g -o asm asm.c && ./asm main.S
