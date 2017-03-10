@@ -5,8 +5,11 @@
 int isReg(char *s);
 int isOpcode(char *s);
 int isLabel(char *s);
+int isComment(char *s);
+
 int addToRegisterList(char *s);
-int fufillLabel();
+int addToOpcodeList(char *s)
+int fufillLabel(char *s, int opCount);
 
 int main(int argc, char **argv){
 	//check arguments
@@ -50,12 +53,12 @@ int main(int argc, char **argv){
 
 
 	struct {
-		char *op;
+		char *name;
 		char *label;
 		char *Dest;
 		char *Src;
 
-		int uin; //use input not
+		int ui; //use input
 		int we; //write enable
 
 		int opcode;
@@ -70,48 +73,52 @@ int main(int argc, char **argv){
 	} operations[100];
 	int nOps = 0;
 
-
+	typedef char * string;
 	//collect line by line and format
 	char funExp[] = "\n\t\r ,"; //delimiters
 	char *token; //token for words
 	char line[100]; //temp storage for each line
-	char *operation[3]; //temp operation storage
+	string operation[3]; //temp operation storage
 	int cCount = 2;
 	while(fgets(line, sizeof line, fp)!=NULL){
 		token = strtok(line, funExp);
-		while(token != NULL){
-
+		cCount = 2;
+		while(token != NULL && cCount >= 0 ){
 			printf("|%s| ", token);
-
-			//check for label
-			if(isLabel(token)){
-				//add to label database
-			}
-			//check for opcode
-			if(isOpcode(token)){
-				fufillLabel(); //any un-enumerated labels point here
-
-			}
-			//check for Rd
-			if(cCount == 1 && isReg(token)){
-
-			}
-			//check for Rs or input
-			if(cCount == 0){
-				if(isReg(token)){
-
-				}
-				else {
-					//Function using Input
-				}
-
-			}
-
-
+			//Copy each operation to list
+			strcpy(operation[cCount], token);
+			cCount--;
 
 			token = strtok(NULL, funExp);
 		}
 		printf("\n");
+		if(isLabel(operation[2])){
+			printf("%s is a Label\n", operation[2]);
+			//add to label database
+		}
+		if(isOpcode(operation[2])){
+			printf("%s is an opcode\n", operation[2]);
+			strcpy(operations[nOps].name , operation[2]);
+			if(isReg(operation[1])){
+				printf("%s is Rd\n", operation[1]);
+				strcpy(operations[nOps].Dest, operation[1]);
+				if(isReg(operation[0])){
+					printf("%s is Rs\n", operation[0]);
+					strcpy(operations[nOps].Src, operation[0]);
+					operations[nOps].ui = 0;
+				}
+				else {
+					printf("%s uses Input\n", operation[2]);
+					operations[nOps].ui = 1;
+				}
+			}
+			else {
+				printf("%s is a branch to %s\n", operation[2], operation[1]);
+				strcpy(operations[nOps].label, operation[1]);
+				operations[nOps].we = 0;
+
+		}
+
 	} //end of input
 
 
@@ -134,6 +141,10 @@ int isLabel(char *s){
 int addToRegisterList(char *s){
 
 }
-int fufillLabel(){
+int fufillLabel(char *s, int opCount){
 
+}
+int isComment(char *s){
+	if(s[0] == ';') return 1;
+	else return 0;
 }
