@@ -17,7 +17,7 @@ Here is a Table of commands:
 /* TODO
 	
 	add data to operations
-		Rd, Rs, Add, opcode, hex
+		opcode, hex
 	output full hex to file
 	write instructions
 	Maybe edit Xilinx
@@ -283,7 +283,9 @@ int generateOpcodes(){
 	for(i=0; i<nOps; i++){
 		int j;
 		for(j=0; j<MAXOPS; j++){
-			if(strcmp(opcodes[j], operations[i].name)==0)
+			if(strcmp(opcodes[j], operations[i].name)==0){
+				
+			}
 		}
 
 	}
