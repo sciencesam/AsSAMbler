@@ -99,8 +99,8 @@ int main(int argc, char **argv){
 		outputFilename = argv[2];
 	}
 	else {
-		printf("Missing Output Filename, using out.sam\n");
-		outputFilename = "out.sam";
+		printf("Missing Output Filename, using out.coe\n");
+		outputFilename = "out.coe";
 	}
 	fp = fopen(inputFilename, "r");
 	if(fp == NULL){
@@ -192,15 +192,20 @@ int main(int argc, char **argv){
 	} //end of input//
 
 	enumerateDataInOperations();
-
+	//Print base and save to coe file//
+	printf("memory_initialization_radix=16;\n");
+	fprintf(ofp,"memory_initialization_radix=16;\n");
+	//Print and save vector bit to file//
+	printf("memory_initialization_vector=\n");
+	fprintf(ofp,"memory_initialization_vector=\n");
 	int i;
 	for(i=0;i<nOps;i++){
 		/*printf("%d: OP:%s D:%s S:%s L:%s | UI:%d wen:%d Rd:%d Rs:%d Addr:%d Opc:%d 0x:%s \n\n", i,operations[i].name,
 			operations[i].Dest, operations[i].Src, operations[i].label, operations[i].ui, operations[i].wen, operations[i].Rd,
 			 operations[i].Rs, operations[i].Addr,operations[i].opcode, operations[i].hex);*/
-		printf("%s\n", operations[i].hex);
-		fprintf(ofp, "%s\n", operations[i].hex);
-	}
+		printf("%s%c\n", operations[i].hex, ((i == nOps-1)?';':','));
+		fprintf(ofp, "%s%c\n", operations[i].hex, ((i == nOps-1)?';':','));	}
+	//printf("%d Ops\n", nOps);
 	return 0;
 }
 
